@@ -1,170 +1,1003 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ufuk Köşker - iOS Developer</title>
-  <meta name="description" content="iOS Apps by Ufuk Köşker">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="iOS Apps by Ufuk Köşker - Building beautiful mobile experiences">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #0f0f18;
+      --bg-card: rgba(20, 20, 35, 0.6);
+      --border-color: rgba(139, 92, 246, 0.2);
+      --text-primary: #ffffff;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+      --accent-blue: #3b82f6;
+      --gradient-primary: linear-gradient(135deg, #a855f7, #ec4899);
+      --gradient-text: linear-gradient(90deg, #a855f7, #ec4899);
+    }
+    
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
-      background: #fafafa;
-      color: #1a1a1a;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
     }
     
-    .container {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 80px 24px;
+    /* Animated Background */
+    .bg-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
     }
     
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 64px;
+    .bg-glow::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.15) 0%, transparent 60%);
+      animation: pulse 8s ease-in-out infinite;
     }
     
-    .avatar {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      border-radius: 20px;
+    .bg-glow::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+    }
+    
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-primary);
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
-      margin: 0 auto 24px;
+      font-size: 16px;
     }
     
-    h1 {
-      font-size: 1.75rem;
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .theme-toggle:hover {
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+    }
+    
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+    }
+    
+    .hero-content {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+    
+    .avatar-container {
+      position: relative;
+    }
+    
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      padding: 4px;
+      position: relative;
+    }
+    
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      overflow: hidden;
+    }
+    
+    .avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .avatar-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+      z-index: -1;
+      animation: avatarGlow 4s ease-in-out infinite;
+    }
+    
+    @keyframes avatarGlow {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+    }
+    
+    .hero-text h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    
+    .hero-text h1 span.name {
+      color: var(--text-primary);
+    }
+    
+    .hero-text h1 span.gradient {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero-text h1 .sparkle {
+      display: inline-block;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(10deg); }
+    }
+    
+    .hero-subtitle {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    
+    .hero-subtitle span {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero-description {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 500px;
+      margin-bottom: 32px;
+    }
+    
+    .hero-description strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(168, 85, 247, 0.4);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.1);
+    }
+    
+    .social-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 8px;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+    
+    .social-link:hover {
+      color: var(--accent-purple);
+      transform: translateY(-2px);
+    }
+    
+    /* Section Styles */
+    section {
+      padding: 100px 0;
+    }
+    
+    .section-header {
+      margin-bottom: 16px;
+    }
+    
+    .section-title {
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 8px;
     }
     
-    .subtitle {
-      color: #6b7280;
+    .section-subtitle {
+      color: var(--text-secondary);
       font-size: 1rem;
     }
     
-    /* Apps */
-    .apps {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-bottom: 64px;
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
     }
     
-    .app-card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      color: inherit;
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
     
-    .app-card:hover {
-      border-color: #d1d5db;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      transform: translateY(-2px);
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-purple);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
     
-    .app-icon {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      border-radius: 14px;
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(168, 85, 247, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      flex-shrink: 0;
+      font-size: 24px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(168, 85, 247, 0.3);
     }
     
-    .app-info { flex: 1; }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .card-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .card-list {
+      list-style: none;
+    }
+    
+    .card-list li {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-list li::before {
+      content: '•';
+      color: var(--accent-purple);
+    }
+    
+    .view-projects-btn {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 32px;
+    }
+    
+    /* Apps Section */
+    .apps-section {
+      padding: 80px 0;
+    }
+    
+    .app-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    .app-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .app-card:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      background: var(--gradient-primary);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.3);
+    }
+    
+    .app-info {
+      flex: 1;
+    }
     
     .app-name {
-      font-size: 1rem;
+      font-size: 1.25rem;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
     
     .app-desc {
-      font-size: 0.875rem;
-      color: #6b7280;
-      margin-bottom: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
     }
     
     .app-links {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       align-items: center;
     }
     
-    .app-store-btn img { height: 32px; }
-    
-    .privacy-link {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      text-decoration: none;
+    .app-store-badge {
+      height: 40px;
+      transition: transform 0.3s;
     }
     
-    .privacy-link:hover { color: #6366f1; }
+    .app-store-badge:hover {
+      transform: scale(1.05);
+    }
+    
+    .privacy-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s;
+    }
+    
+    .privacy-link:hover {
+      color: var(--accent-purple);
+    }
+    
+    /* Contact Section */
+    .contact-section {
+      padding: 80px 0 120px;
+    }
+    
+    .contact-wrapper {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+      border: 1px solid var(--border-color);
+      border-radius: 32px;
+      padding: 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .contact-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 50%;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+      opacity: 0.5;
+    }
+    
+    .contact-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .contact-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+    
+    .contact-title span {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .contact-description {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    
+    .contact-form {
+      position: relative;
+      z-index: 1;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    textarea.form-input {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+    }
     
     /* Footer */
     .footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .footer-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .footer-location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    
+    .footer-location .flag {
+      font-size: 1rem;
+    }
+    
+    .footer-center {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    
+    .footer-right {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .footer-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    
+    .footer-link:hover {
+      color: var(--accent-purple);
+    }
+    
+    .copyright {
       text-align: center;
       padding-top: 32px;
-      border-top: 1px solid #e5e7eb;
+      margin-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      font-size: 0.8rem;
     }
     
-    .footer a {
-      color: #6b7280;
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.2s;
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px;
+      }
     }
     
-    .footer a:hover { color: #6366f1; }
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 12px 20px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .hero-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.75rem;
+      }
+      
+      .hero-description {
+        text-align: center;
+      }
+      
+      .btn-group {
+        justify-content: center;
+      }
+      
+      .social-divider {
+        display: none;
+      }
+      
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .app-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .app-links {
+        justify-content: center;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+      }
+    }
     
-    .footer span { color: #d1d5db; margin: 0 12px; }
+    /* Smooth Scroll */
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
 <body>
+  <div class="bg-glow"></div>
+  
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="#" class="logo">
+      <div class="logo-icon">📱</div>
+      <span>Ufuk.dev</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" aria-label="Toggle theme">
+        🌙
+      </button>
+    </div>
+  </nav>
+  
   <div class="container">
-    <header class="header">
-      <div class="avatar">👨‍💻</div>
-      <h1>Ufuk Köşker</h1>
-      <p class="subtitle">iOS Developer</p>
-    </header>
-    
-    <div class="apps">
-      <div class="app-card">
-        <div class="app-icon">📱</div>
-        <div class="app-info">
-          <div class="app-name">StackArt</div>
-          <div class="app-desc">Split photos into 4 parts for carousel posts</div>
-          <div class="app-links">
-            <a href="https://apps.apple.com/app/idXXXXXXXXX" target="_blank" class="app-store-btn">
-              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store">
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <div class="avatar-container">
+          <div class="avatar-glow"></div>
+          <div class="avatar">
+            <div class="avatar-inner">👨‍💻</div>
+          </div>
+        </div>
+        <div class="hero-text">
+          <h1>
+            Hey, I'm <span class="name">Ufuk</span><span class="sparkle">✨</span><br>
+            <span class="gradient">A iOS Developer</span>
+          </h1>
+          <p class="hero-description">
+            A <strong>mobile developer</strong> with solid foundations in <strong>design</strong>,
+            passionate about crafting seamless user experiences. I thrive at the intersection
+            of creativity and functionality.
+          </p>
+          <div class="btn-group">
+            <a href="#contact" class="btn btn-primary">
+              💬 Contact Me
             </a>
-            <a href="stackart-privacy.html" class="privacy-link">Privacy</a>
+            <a href="#projects" class="btn btn-secondary">
+              📱 View Projects
+            </a>
+            <div class="social-divider"></div>
+            <div class="social-links">
+              <a href="https://github.com/ufukkosker" target="_blank" class="social-link" aria-label="GitHub">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              <a href="https://linkedin.com/in/ufukkosker" target="_blank" class="social-link" aria-label="LinkedIn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </a>
+              <a href="https://twitter.com/ufukkosker" target="_blank" class="social-link" aria-label="Twitter">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
     
+    <!-- Skills Section -->
+    <section id="skills">
+      <div class="section-header">
+        <h2 class="section-title">Building Digital Experiences</h2>
+        <p class="section-subtitle">I specialize in creating stunning user interfaces and developing high-quality applications that stand out.</p>
+      </div>
+      
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3 class="card-title">What I can do</h3>
+          <p class="card-description">I can help develop solutions that will help you grow your business:</p>
+          <ul class="card-list">
+            <li>iOS App Development</li>
+            <li>SwiftUI & UIKit</li>
+            <li>Mobile App Design</li>
+            <li>App Store Publishing</li>
+            <li>API Integration</li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">🛠️</div>
+          <h3 class="card-title">Tools I Use</h3>
+          <p class="card-description">I use the latest tools and technologies to build functional and scalable products:</p>
+          <ul class="card-list">
+            <li><strong>Languages:</strong> Swift, SwiftUI, Objective-C</li>
+            <li><strong>Frameworks:</strong> UIKit, Combine, Core Data</li>
+            <li><strong>Tools:</strong> Xcode, Instruments, Git</li>
+            <li><strong>Design:</strong> Figma, Sketch</li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <h3 class="card-title">UI/UX Design</h3>
+          <p class="card-description">I am a designer first, developer second. I can help design clean and modern interfaces:</p>
+          <ul class="card-list">
+            <li>User-Centered Design</li>
+            <li>Modern & Clean UI</li>
+            <li>Responsive Layouts</li>
+            <li>Wireframes & Prototypes</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="view-projects-btn">
+        <a href="#projects" class="btn btn-secondary">
+          📱 View My Projects
+        </a>
+      </div>
+    </section>
+    
+    <!-- Apps Section -->
+    <section id="projects" class="apps-section">
+      <div class="section-header">
+        <h2 class="section-title">My Apps</h2>
+        <p class="section-subtitle">Check out the apps I've built and published on the App Store.</p>
+      </div>
+      
+      <div class="app-cards">
+        <div class="app-card">
+          <div class="app-icon">📱</div>
+          <div class="app-info">
+            <div class="app-name">StackArt</div>
+            <div class="app-desc">Split photos into 4 parts for carousel posts. Perfect for creating stunning Instagram carousel images.</div>
+            <div class="app-links">
+              <a href="https://apps.apple.com/app/idXXXXXXXXX" target="_blank">
+                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on App Store" class="app-store-badge">
+              </a>
+              <a href="stackart-privacy.html" class="privacy-link">Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+      <div class="contact-wrapper">
+        <div class="contact-content">
+          <h2 class="contact-title">
+            Bringing your ideas to life.<br>
+            <span>Let's turn your vision into reality</span>
+          </h2>
+          <p class="contact-description">
+            Have a project in mind or just want to chat? Let's connect!
+          </p>
+        </div>
+        <form class="contact-form" action="mailto:ufuk.kskr@gmail.com" method="post" enctype="text/plain">
+          <div class="form-group">
+            <label class="form-label" for="name">Name</label>
+            <input type="text" id="name" name="name" class="form-input" placeholder="Your Name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="contact@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message">Message</label>
+            <textarea id="message" name="message" class="form-input" placeholder="Your message here..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send</button>
+        </form>
+      </div>
+    </section>
+    
+    <!-- Footer -->
     <footer class="footer">
-      <a href="mailto:ufuk.kskr@gmail.com">Contact</a>
+      <div class="footer-content">
+        <div class="footer-left">
+          <span class="footer-name">Ufuk Köşker</span>
+          <span class="footer-location">
+            <span class="flag">🇹🇷</span> Based in Turkey
+          </span>
+        </div>
+        <div class="footer-center">
+          Website Designed in Figma. Built with HTML, CSS, and JavaScript.
+        </div>
+        <div class="footer-right">
+          <a href="https://github.com/ufukkosker" target="_blank" class="footer-link" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+          <a href="https://linkedin.com/in/ufukkosker" target="_blank" class="footer-link" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+          </a>
+          <a href="https://twitter.com/ufukkosker" target="_blank" class="footer-link" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2024 Ufuk Köşker. All rights reserved.
+      </div>
     </footer>
   </div>
 </body>
